@@ -20,7 +20,7 @@ public:
     bool openDB(void);
     void closeDB(void);
     void createLoadDB(QString strPath);
-    void executeCommandQuery(QString strQuery);
+    bool executeCommandQuery(QString strQuery);
     QStringList executeRequestQuery(QString strQuery, uint uiColumns);
 
 private:

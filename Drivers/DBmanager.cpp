@@ -54,11 +54,11 @@ bool DBmanager::createTables(void)
             case TB_EXERCISES                                    :
                 strQuery.append(" 'Name'          VARCHAR(100),"
                                 " 'Description'   VARCHAR(100),"
+                                " 'Type'          VARCHAR(100),"
                                 " 'Sets'          INTEGER,"
                                 " 'Reps'          INTEGER,"
                                 " 'Body Part'     VARCHAR(100),"
-                                " 'Difficulty'    INTEGER,"
-                                " 'View'          VARCHAR(100))");
+                                " 'Difficulty'    INTEGER)");
                 break;
             case TB_BODYPARTS                                    :
                 strQuery.append(" 'Description'   VARCHAR(100))");
@@ -129,19 +129,39 @@ void DBmanager::insertInTable(QString strTableName, QStringList strlColumnNames,
 //------------------------------------------------------------------------------
 void DBmanager::fillTables(void)
 {
-    //@todo execute this only if database is created new
+    // @todo execute this only if database is created new
+
     QVector<QStringList> vecTemp;
 
-    //ANATOMICAL_PARTS
-    vecTemp.append(QStringList()<<"01"<<"'Cranio'"    );
-    vecTemp.append(QStringList()<<"04"<<"'Torace'"    );
-    vecTemp.append(QStringList()<<"02"<<"'Rachis'"    );
-    vecTemp.append(QStringList()<<"05"<<"'Abdomen'"   );
-    vecTemp.append(QStringList()<<"26"<<"'Digestif'"  );
-    vecTemp.append(QStringList()<<"41"<<"'Stitching'" );
-    vecTemp.append(QStringList()<<"56"<<"'Tomografia'");
-    insertInTable("ANATOMICAL_PARTS", QStringList()<<"Id"<<"Text", vecTemp);
+    //EXERCISES
+    // @todo
+
+    //BODY_PARTS
+    vecTemp.append(QStringList("'Abs'"       ));
+    vecTemp.append(QStringList("'Neck'"      ));
+    vecTemp.append(QStringList("'Biceps'"    ));
+    vecTemp.append(QStringList("'Triceps'"   ));
+    vecTemp.append(QStringList("'Chest'"     ));
+    vecTemp.append(QStringList("'Shoulders'" ));
+    vecTemp.append(QStringList("'Traps'"     ));
+    vecTemp.append(QStringList("'Quadriceps'"));
+    vecTemp.append(QStringList("'Hamstrings'"));
+    vecTemp.append(QStringList("'Calfs'"     ));
+    vecTemp.append(QStringList("'Glutes'"    ));
+    vecTemp.append(QStringList("'Lower Back'"));
+    vecTemp.append(QStringList("'Lats'"      ));
+    insertInTable("BODY_PARTS", QStringList("Description"), vecTemp);
     vecTemp.clear();
+
+    //EXE_TYPES
+    vecTemp.append(QStringList("'Cardio'"         ));
+    vecTemp.append(QStringList("'Stretching'"     ));
+    vecTemp.append(QStringList("'Muscle Building'"));
+    insertInTable("EXE_TYPES", QStringList("Description"), vecTemp);
+    vecTemp.clear();
+
+    //FOODS
+    // @todo
 }
 //------------------------------------------------------------------------------
 //temporary function only to test queries
@@ -185,9 +205,9 @@ uint DBmanager::findColumnsNumber(QString strQuery)
 
         switch (strdjb(firstWord.data()))
         {
-//        case EN_SELECT:
-//            uiColumns = processSelectColumns(strQuery);
-//            break;
+        //        case EN_SELECT:
+        //            uiColumns = processSelectColumns(strQuery);
+        //            break;
         default:
             break;
         }

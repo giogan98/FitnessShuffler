@@ -28,7 +28,7 @@ private:
     {
         TB_EXERCISES,
         TB_BODYPARTS,
-        TB_EXE_TYPE ,
+        TB_EXE_TYPES ,
         TB_FOODS    ,
         TB_NUMEL
     };

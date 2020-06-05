@@ -46,16 +46,20 @@ void DBmaster::closeDB(void)
  * @brief given a valid query, executes it. Ideal to insert values or to create
  * tables in the database.
 */
-void DBmaster::executeCommandQuery(QString strQuery)
+bool DBmaster::executeCommandQuery(QString strQuery)
 {
+    bool bFlag = false;
     QSqlQuery query;
     openDB();
+
     if (db.isOpen() && strQuery != "")
     {
         QSqlQuery query;
-        query.exec(strQuery);
+        bFlag = query.exec(strQuery);
     }
+
     closeDB();
+    return bFlag;
 }
 //------------------------------------------------------------------------------
 QStringList DBmaster::executeRequestQuery(QString strQuery, uint uiColumns)
