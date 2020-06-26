@@ -69,6 +69,7 @@ QStringList DBmaster::executeRequestQuery(QString strQuery, uint uiColumns)
     QSqlQuery query;
     QStringList strlResults;
     openDB();
+
     if (db.isOpen() && strQuery != "")
     {
         QSqlQuery query(strQuery);
@@ -85,6 +86,7 @@ QStringList DBmaster::executeRequestQuery(QString strQuery, uint uiColumns)
             }
         }
     }
+
     closeDB();
     return strlResults;
 }

@@ -10,14 +10,15 @@ DBmanager dbManager = DBmanager::instance();
 //------------------------------------------------------------------------------
 DBmanager::DBmanager()
 {
-    //@todo check names and tables that repete themselves
     strl_tablesNames<<"EXERCISES"<<"BODY_PARTS"<<"EXE_TYPES"<<"FOODS";
 }
 //------------------------------------------------------------------------------
-void DBmanager::createDB(void)
+void DBmanager::createDB(QString strDBpath)
 {
-    //@todo change file path to something else
-    dbMaster.createLoadDB("C:\\users\\giorg\\desktop\\test.db");
+    if (!strDBpath.isNull())
+    {
+        dbMaster.createLoadDB(strDBpath);
+    }
 }
 //------------------------------------------------------------------------------
 bool DBmanager::openDB(void)
@@ -30,11 +31,11 @@ void DBmanager::closeDB(void)
     dbMaster.closeDB();
 }
 //------------------------------------------------------------------------------
-void DBmanager::loadDBpath(QString strPath)
+void DBmanager::loadDBpath(QString strDBpath)
 {
-    if (strPath != "")
+    if (strDBpath != "")
     {
-        dbMaster.createLoadDB(strPath);
+        dbMaster.createLoadDB(strDBpath);
     }
 }
 //------------------------------------------------------------------------------
@@ -164,37 +165,6 @@ void DBmanager::fillTables(void)
     // @todo
 }
 //------------------------------------------------------------------------------
-//temporary function only to test queries
-void DBmanager::fillTestTables(void)
-{
-    bool bSucc = openDB();
-    if (bSucc)
-    {
-        QString strQuery = "";
-
-        for (int ii = 0; ii < TB_NUMEL; ii++)
-        {
-            strQuery = "INSERT INTO ";
-            strQuery.append(strl_tablesNames[ii]);
-
-            switch (ii)
-            {
-            default:
-                strQuery.clear();
-                break;
-            }
-
-            if (strQuery != "")
-            {
-                dbMaster.executeCommandQuery(strQuery);
-            }
-
-        }
-        closeDB();
-    }
-
-}
-//------------------------------------------------------------------------------
 uint DBmanager::findColumnsNumber(QString strQuery)
 {
     uint uiColumns = 0;
@@ -218,7 +188,6 @@ uint DBmanager::findColumnsNumber(QString strQuery)
 //------------------------------------------------------------------------------
 uint DBmanager::processSelectColumns(QString strQuery)
 {
-    //SELECT ID, BODYPART FROM DICOM WHERE DESCRIPTION = 'dscrption'
     strQuery.remove("'");
     std::string firstWord = strQuery.split(" ").at(0).toStdString();
     int iFrstWhtSpc = strQuery.indexOf(" ");
@@ -229,5 +198,24 @@ uint DBmanager::processSelectColumns(QString strQuery)
     QStringList strl_columns = strQuery.split(",");
     uint iColumns = strl_columns.length();
     return iColumns;
+}
+//------------------------------------------------------------------------------
+QStringList DBmanager::selectData(enSelect enSlct, int iCode)
+{
+    QStringList strlResults;
+    QString strQuery;
+
+    switch (enSlct)
+    {
+    //@todo add elements to the enSlct enum to switch between the cases,
+    //      each element corrispond to a query to retrieve data from the db
+    //      use iCode to navigate between the relationships
+    default:
+        break;
+    }
+
+    uint uiColumnsNumber = findColumnsNumber(strQuery);
+    strlResults = dbMaster.executeRequestQuery(strQuery, uiColumnsNumber);
+    return strlResults;
 }
 //------------------------------------------------------------------------------

@@ -28,25 +28,30 @@ private:
     {
         TB_EXERCISES,
         TB_BODYPARTS,
-        TB_EXE_TYPES ,
+        TB_EXE_TYPES,
         TB_FOODS    ,
         TB_NUMEL
+    };
+
+    enum enSelect
+    {
+        SE_NUMEL,
     };
 
 public:
     bool openDB(void);
     void closeDB(void);
-    void createDB(void);
     void fillTables(void);
     bool createTables(void);
-    void fillTestTables(void);
-    void loadDBpath(QString strPath);
+    void createDB(QString strDBpath);
+    void loadDBpath(QString strDBpath);
 
 private:
     DBmanager();
     QStringList fillCBdistricts(void);
     uint findColumnsNumber(QString strQuery);
     uint processSelectColumns(QString strQuery);
+    QStringList selectData(enSelect enSlct, int iCode);
     QStringList fillCBdistrictsDescription(QString strDistrict);
     void insertInTable(QString strTableName, QStringList strlColumnNames,
                        QVector<QStringList> veclValues);

@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <Drivers/DBmanager.h>
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -12,10 +14,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    Ui::MainWindow *ui;
 
 private:
-    Ui::MainWindow *ui;
+    QString strDBpath;
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow(void);
+
+private:
+    bool checkDBfile(void);
 };
 #endif // MAINWINDOW_H
