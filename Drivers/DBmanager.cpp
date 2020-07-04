@@ -55,10 +55,10 @@ bool DBmanager::createTables(void)
             case TB_EXERCISES                                    :
                 strQuery.append(" 'Name'          VARCHAR(100),"
                                 " 'Description'   VARCHAR(100),"
-                                " 'Type'          VARCHAR(100),"
+                                " 'Type'          INTEGER,"
                                 " 'Sets'          INTEGER,"
                                 " 'Reps'          INTEGER,"
-                                " 'Body Part'     VARCHAR(100),"
+                                " 'Body_Part'     INTEGER,"
                                 " 'Difficulty'    INTEGER)");
                 break;
             case TB_BODYPARTS                                    :
@@ -93,7 +93,7 @@ void DBmanager::insertInTable(QString strTableName, QStringList strlColumnNames,
                               QVector<QStringList> veclValues)
 {
     bool bSucc = openDB();
-    for ( int ii = 0; ii < veclValues.length(); ii++)
+    for (int ii = 0; ii < veclValues.length(); ii++)
     {
         if (bSucc && strTableName != "" && strlColumnNames.length() > 0
                 && veclValues[ii].length() == strlColumnNames.length() )

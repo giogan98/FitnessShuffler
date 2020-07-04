@@ -3,7 +3,11 @@
 
 #include <Drivers/DBmanager.h>
 
+#include <QTableView>
 #include <QMainWindow>
+#include <QSqlRelationalDelegate>
+#include <QSqlRelationalTableModel>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +22,7 @@ public:
 
 private:
     QString strDBpath;
+    QSqlRelationalTableModel * model;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -25,5 +30,7 @@ public:
 
 private:
     bool checkDBfile(void);
+    void initializeExercisesModel(void);
+    void setUpModel(QSqlRelationalTableModel *model, QTableView *tblView);
 };
 #endif // MAINWINDOW_H
