@@ -1,10 +1,9 @@
-#include "DBmaster.h"
+﻿#include "DBmaster.h"
 
 #include <QDebug>
 #include <QVariant>
 
-//class that consent to create db, open and close db,
-//execute single query
+
 //------------------------------------------------------------------------------
 DBmaster::DBmaster()
 {
@@ -17,7 +16,7 @@ DBmaster::DBmaster()
  * @brief create a database or if the database exist set the database
  * name to be able to use it later
  */
-void DBmaster::createLoadDB(QString strPath)
+void DBmaster::createLoadDB(const QString &strPath)
 {
     if (strPath != "")
     {
@@ -28,55 +27,120 @@ void DBmaster::createLoadDB(QString strPath)
     }
 }
 //------------------------------------------------------------------------------
+/**
+ * @brief DBmaster::openDB
+ * @brief function opens a connection to the database
+ * @return
+ */
 bool DBmaster::openDB(void)
 {
-    db.open();
     bool bOpen = db.isOpen();
+    if (!bOpen)
+    {
+        db.open();
+        bOpen = db.isOpen();
+    }
     return bOpen;
 }
 //------------------------------------------------------------------------------
+/**
+ * @brief DBmaster::closeDB
+ * @brief function closes a connection to the database
+ */
 void DBmaster::closeDB(void)
 {
     db.close();
 }
 //------------------------------------------------------------------------------
 /**
- * @brief DBmaster::executeQuery
+ * @brief DBmaster::executeSingleCommandQuery
+ * @warning differently from function 'executeMultipleCommandQuery', columns
+ *          names and values must be between '' example : 'value'
  * @param strQuery
  * @brief given a valid query, executes it. Ideal to insert values or to create
  * tables in the database.
+ * @return if the query is executed succesfully
 */
-bool DBmaster::executeCommandQuery(QString strQuery)
+bool DBmaster::executeSingleCommandQuery(const QString &strQuery)
 {
-    bool bFlag = false;
+    bool bSucc = false;
     QSqlQuery query;
     openDB();
-
     if (db.isOpen() && strQuery != "")
     {
-        QSqlQuery query;
-        bFlag = query.exec(strQuery);
+        bSucc = query.exec(strQuery);
     }
-
-    closeDB();
-    return bFlag;
+    return bSucc;
 }
 //------------------------------------------------------------------------------
-QStringList DBmaster::executeRequestQuery(QString strQuery, uint uiColumns)
+/**
+ * @brief DBmaster::executeMultipleCommandQuery
+ * @brief insert all the n elements of the vector in the db. Each element is
+ *        a row of the database, containing multiple columns.
+ * @warning do NOT use '' while inserting in the db, contrary to what is done
+ *          with the function for a single command query. Ex: 'value1' is wrong
+ * @param iColumnsNumber numbers of columns that the query utilizes
+ * @param strQueryToBind query with correct sintax that permit binding
+ * @param veclValues vector of qstringlist, each element of the vector is a row
+ *                   of the database wich will be inserted
+ * @return if everyquery is executed successfully
+ */
+bool DBmaster::executeMultipleCommandQuery(const int &iColumnsNumber,
+                                           const QString &strQueryToBind,
+                                           const QVector<QStringList> &veclValues)
 {
-    //SELECT bla1, bla2, bla3 FROM table...
-    QString strValue;
+    //Example of strGenericQuery:
+    //INSERT INTO table (column1 , column2) VALUES (:column1 , :column2)
     QSqlQuery query;
-    QStringList strlResults;
-    openDB();
+    bool bSucc = false;
 
-    if (db.isOpen() && strQuery != "")
+    if (openDB() && strQueryToBind != "")
+    {
+        bSucc = true;
+        query.exec("begin exclusive transaction;");
+        query.prepare(strQueryToBind);
+
+        for (int ii = 0; ii < veclValues.size(); ii++)
+        {
+            for (int jj = 0; jj < iColumnsNumber; jj++)
+            {
+                query.bindValue(jj, veclValues[ii][jj]);
+            }
+            bSucc = bSucc && query.exec();
+            if (!bSucc)
+                {
+                    qDebug()<<"QUERY: "<<query.lastQuery();
+                    qDebug()<<"ERROR: "<<query.lastError();
+                }
+        }
+    }
+
+    bSucc = bSucc && query.exec("commit;");
+    return bSucc;
+}
+//------------------------------------------------------------------------------
+/**
+ * @brief DBmaster::executeRequestQuery
+ * @brief executes a query and return its results
+ * @warning does require explicit columns names, does NOT work with '*'
+ * @param strQuery string containing query
+ * @param iColumns number of columns requested by the query
+ * @return
+ */
+QStringList DBmaster::executeRequestQuery(const QString &strQuery, const int &iColumns)
+{
+    //Example of strQuery:
+    //SELECT column1, column2, column3 FROM table1
+    QString strValue;
+    QStringList strlResults;
+
+    if (openDB() && strQuery != "")
     {
         QSqlQuery query(strQuery);
         query.exec();
         while (query.next())
         {
-            for (uint ii = 0; ii < uiColumns; ii++)
+            for (int ii = 0; ii < iColumns; ii++)
             {
                 strValue = query.value(ii).toString();
                 if (strValue != "")
@@ -87,7 +151,6 @@ QStringList DBmaster::executeRequestQuery(QString strQuery, uint uiColumns)
         }
     }
 
-    closeDB();
     return strlResults;
 }
 //------------------------------------------------------------------------------

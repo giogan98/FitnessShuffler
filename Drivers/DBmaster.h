@@ -1,4 +1,4 @@
-#ifndef DBMASTER_H
+﻿#ifndef DBMASTER_H
 #define DBMASTER_H
 
 #include <QStringList>
@@ -19,10 +19,11 @@ public:
     DBmaster();
     bool openDB(void);
     void closeDB(void);
-    void createLoadDB(QString strPath);
-    bool executeCommandQuery(QString strQuery);
-    QStringList executeRequestQuery(QString strQuery, uint uiColumns);
-
+    void createLoadDB(const QString &strPath);
+    bool executeSingleCommandQuery(const QString &strQuery);
+    QStringList executeRequestQuery(const QString &strQuery, const int &iColumns);
+    bool executeMultipleCommandQuery(const int &iColumnsNumber, const QString &strQueryToBind,
+                                     const QVector<QStringList> &veclValues);
 private:
 
 };
