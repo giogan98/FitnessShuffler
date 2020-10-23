@@ -2,9 +2,9 @@
 #define DBMASTER_H
 
 #include <QStringList>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/qsqlquery.h>
-#include <QtSql/qsqlerror.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 
 class DBmaster
